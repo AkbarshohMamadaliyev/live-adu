@@ -1,0 +1,9 @@
+node_modules/
+.next/
+out/
+build/
+.env
+*.log
+.DS_Store
+public/hls/*
+!public/hls/.gitkeep
