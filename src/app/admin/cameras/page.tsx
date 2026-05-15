@@ -179,6 +179,14 @@ export default function CamerasPage() {
       setFormError("Subcategory is required");
       return;
     }
+    if (!form.username.trim()) {
+      setFormError("Login is required");
+      return;
+    }
+    if (!editTarget && !form.password.trim()) {
+      setFormError("Password is required");
+      return;
+    }
     setSaving(true);
     try {
       const url = editTarget
@@ -485,21 +493,22 @@ export default function CamerasPage() {
             {/* Login */}
             <div>
               <label className="block text-xs text-neutral-400 mb-1.5">
-                Login
+                Login <span className="text-hikred">*</span>
               </label>
               <input
                 value={form.username}
                 onChange={(e) => setForm({ ...form, username: e.target.value })}
                 className="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-hikred"
-                placeholder="Optional"
+                placeholder="Enter login"
                 autoComplete="off"
+                required
               />
             </div>
 
             {/* Password */}
             <div>
               <label className="block text-xs text-neutral-400 mb-1.5">
-                Password
+                Password <span className="text-hikred">*</span>
                 {editTarget && (
                   <span className="text-neutral-600 ml-1">
                     (leave blank to keep)
@@ -514,7 +523,9 @@ export default function CamerasPage() {
                     setForm({ ...form, password: e.target.value })
                   }
                   className="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-3 py-2 pr-9 text-white text-sm focus:outline-none focus:border-hikred"
-                  placeholder={editTarget ? "Optional" : "Optional (no auth)"}
+                  placeholder={
+                    editTarget ? "Leave blank to keep" : "Enter password"
+                  }
                   autoComplete="new-password"
                 />
                 <button
@@ -615,8 +626,8 @@ export default function CamerasPage() {
                     }
                     className="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-hikred"
                   >
-                    <option value="1">Main (1 — yuqori sifat)</option>
-                    <option value="2">Sub (2 — past sifat)</option>
+                    <option value="1">High Quality</option>
+                    <option value="2">Low Quality</option>
                   </select>
                 </div>
               </>
