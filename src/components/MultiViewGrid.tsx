@@ -2,15 +2,7 @@
 
 import CameraPlayer from "./CameraPlayer";
 import type { Camera } from "./CameraList";
-import {
-  Wifi,
-  WifiOff,
-  Video,
-  MonitorX,
-  LayoutGrid,
-  PanelLeftOpen,
-  PanelLeftClose,
-} from "lucide-react";
+import { WifiOff, PanelLeftOpen, PanelLeftClose } from "lucide-react";
 
 const MAX_SLOTS = 24;
 
@@ -46,27 +38,25 @@ export default function MultiViewGrid({
 }: MultiViewGridProps) {
   const onlineCount = cameras.filter((c) => statuses.get(c.id) ?? false).length;
 
-  // Fixed 24 slots
   const slots: (Camera | null)[] = Array.from(
     { length: MAX_SLOTS },
     (_, i) => cameras[i] ?? null,
   );
 
-  // Selected cameras in insertion order (preserve slot order)
   const selectedCameras = slots.filter(
     (cam): cam is Camera => cam !== null && selectedCameraIds.has(cam.id),
   );
 
   return (
-    <div className="flex flex-col h-full overflow-hidden bg-[#0a0a0f]">
-      {/* ── Header ─────────────────────────────────────────── */}
-      <div className="flex items-center justify-between px-4 pt-4 pb-2 flex-shrink-0">
-        <div className="flex items-center gap-2.5">
-          {onToggleSidebar ? (
+    <div className="flex flex-col h-full overflow-hidden bg-[#111214]">
+      {/* ── Header ── */}
+      <div className="flex items-center justify-between px-4 py-2.5 border-b border-[#2a2a2e] flex-shrink-0 bg-[#18191c]">
+        <div className="flex items-center gap-2">
+          {onToggleSidebar && (
             <button
               onClick={onToggleSidebar}
-              className="text-neutral-500 hover:text-white transition-colors p-1 rounded-md hover:bg-neutral-800"
-              title={sidebarOpen ? "Panelni yopish" : "Panelni ochish"}
+              className="text-[#666] hover:text-[#ccc] transition-colors p-1 rounded"
+              title={sidebarOpen ? "Close panel" : "Open panel"}
             >
               {sidebarOpen ? (
                 <PanelLeftClose className="w-4 h-4" />
@@ -74,49 +64,34 @@ export default function MultiViewGrid({
                 <PanelLeftOpen className="w-4 h-4" />
               )}
             </button>
-          ) : (
-            <LayoutGrid className="w-4 h-4 text-purple-500" />
           )}
-          <div>
-            <h2 className="text-white text-sm font-bold tracking-tight leading-none">
-              {title ?? "Kamera tanlash"}
-            </h2>
-            <p className="text-neutral-600 text-[10px] mt-0.5">
-              <span className="text-green-400 font-semibold">
-                {onlineCount}
-              </span>
-              <span> / {MAX_SLOTS} slot · </span>
-              {selectedCameraIds.size > 0 ? (
-                <span className="text-purple-400 font-semibold">
-                  {selectedCameraIds.size} ta tanlangan
-                </span>
-              ) : (
-                <span className="text-neutral-600">
-                  Ko&apos;rish uchun slot tanlang
-                </span>
-              )}
-            </p>
-          </div>
+          <span className="text-[#ccc] text-xs font-medium tracking-wide">
+            {title ?? "Camera View"}
+          </span>
+          <span className="text-[#444] text-xs">·</span>
+          <span className="text-[#888] text-xs">
+            <span className="text-[#4ade80]">{onlineCount}</span>
+            <span className="text-[#444]"> / {MAX_SLOTS}</span>
+          </span>
         </div>
 
         {/* Legend */}
-        <div className="hidden sm:flex items-center gap-3 text-[10px] text-neutral-600">
+        <div className="flex items-center gap-3 text-[10px] text-[#555]">
           <span className="flex items-center gap-1">
-            <span className="w-1.5 h-1.5 rounded-full bg-green-500" /> Online
+            <span className="w-1.5 h-1.5 rounded-full bg-[#4ade80]" /> Online
           </span>
           <span className="flex items-center gap-1">
-            <span className="w-1.5 h-1.5 rounded-full bg-red-600" /> Offline
+            <span className="w-1.5 h-1.5 rounded-full bg-[#ef4444]" /> Offline
           </span>
           <span className="flex items-center gap-1">
-            <span className="w-1.5 h-1.5 rounded-full bg-neutral-700" />{" "}
-            Bo&apos;sh
+            <span className="w-1.5 h-1.5 rounded-full bg-[#333]" /> Empty
           </span>
         </div>
       </div>
 
-      {/* ── 24-slot selector ───────────────────────────────── */}
-      <div className="flex-shrink-0 px-4 pb-3">
-        <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 lg:grid-cols-12 gap-1">
+      {/* ── Slot grid ── */}
+      <div className="flex-shrink-0 px-3 py-2.5 border-b border-[#2a2a2e] bg-[#18191c]">
+        <div className="grid grid-cols-6 sm:grid-cols-8 md:grid-cols-12 gap-px bg-[#2a2a2e]">
           {slots.map((cam, idx) => {
             const slotNum = idx + 1;
             const isEmpty = cam === null;
@@ -127,10 +102,10 @@ export default function MultiViewGrid({
               return (
                 <div
                   key={idx}
-                  className="relative flex items-center justify-center rounded border border-dashed border-neutral-800 bg-[#0d0d14] h-8 cursor-not-allowed opacity-40 select-none"
-                  title={`Slot ${slotNum} — bo'sh`}
+                  className="flex flex-col items-center justify-center bg-[#131416] h-10 select-none cursor-default"
+                  title={`Slot ${slotNum}`}
                 >
-                  <span className="text-[9px] font-mono text-neutral-700 font-bold">
+                  <span className="text-[9px] font-mono text-[#333]">
                     {String(slotNum).padStart(2, "0")}
                   </span>
                 </div>
@@ -138,89 +113,70 @@ export default function MultiViewGrid({
             }
 
             return (
-              <div
+              <button
                 key={cam.id}
-                role="button"
-                tabIndex={0}
                 onClick={() => onToggleCamera(cam)}
-                onKeyDown={(e) => e.key === "Enter" && onToggleCamera(cam)}
                 title={`${cam.name} — ${cam.ipAddress}`}
                 className={`
-                  relative flex items-center gap-1.5 rounded h-8 px-1.5 cursor-pointer
-                  transition-all duration-150 select-none overflow-hidden
+                  relative flex flex-col items-start justify-between h-10 px-1.5 py-1 cursor-pointer
+                  transition-colors duration-100 select-none overflow-hidden text-left
                   ${
                     isSelected
-                      ? "bg-purple-900/60 border border-purple-500 shadow-[0_0_8px_rgba(124,58,237,0.5)]"
+                      ? "bg-[#1e3a5f] outline outline-1 outline-[#3b82f6] z-10"
                       : isOnline
-                        ? "bg-neutral-900 border border-neutral-700 hover:border-purple-500/50 hover:bg-neutral-800"
-                        : "bg-neutral-900 border border-neutral-800 hover:border-neutral-700 opacity-70"
+                        ? "bg-[#1a1b1e] hover:bg-[#222326]"
+                        : "bg-[#171819] hover:bg-[#1c1d1f] opacity-60"
                   }
                 `}
               >
-                {/* Slot number */}
+                <div className="flex items-center justify-between w-full">
+                  <span
+                    className={`text-[9px] font-mono font-semibold ${isSelected ? "text-[#60a5fa]" : "text-[#444]"}`}
+                  >
+                    {String(slotNum).padStart(2, "0")}
+                  </span>
+                  <span
+                    className={`w-1 h-1 rounded-full flex-shrink-0 ${
+                      isOnline ? "bg-[#4ade80]" : "bg-[#ef4444]"
+                    }`}
+                  />
+                </div>
                 <span
-                  className={`text-[9px] font-mono font-bold flex-shrink-0 ${
-                    isSelected ? "text-purple-300" : "text-neutral-600"
-                  }`}
-                >
-                  {String(slotNum).padStart(2, "0")}
-                </span>
-
-                {/* Status dot */}
-                <span
-                  className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${
-                    isOnline
-                      ? "bg-green-500 shadow-[0_0_3px_rgba(34,197,94,0.6)]"
-                      : "bg-red-700"
-                  }`}
-                />
-
-                {/* Name */}
-                <span
-                  className={`text-[9px] font-medium truncate leading-none ${
-                    isSelected ? "text-white" : "text-neutral-400"
-                  }`}
+                  className={`text-[9px] truncate w-full leading-none ${isSelected ? "text-[#e2e8f0]" : "text-[#666]"}`}
                 >
                   {cam.name}
                 </span>
-
-                {/* Selected tick */}
-                {isSelected && (
-                  <span className="absolute right-1 top-0.5 text-purple-400 text-[8px] font-bold">
-                    ✓
-                  </span>
-                )}
-              </div>
+              </button>
             );
           })}
         </div>
       </div>
 
-      {/* Divider */}
-      <div className="h-px bg-neutral-800/60 flex-shrink-0 mx-4" />
-
-      {/* ── Live preview area ──────────────────────────────── */}
-      <div className="flex-1 overflow-auto p-4 min-h-0">
+      {/* ── Live preview ── */}
+      <div className="flex-1 overflow-auto p-3 min-h-0 bg-[#111214]">
         {selectedCameras.length === 0 ? (
-          <div className="h-full flex flex-col items-center justify-center gap-3 text-neutral-700 select-none">
-            <MonitorX className="w-12 h-12 text-neutral-800" />
-            <p className="text-sm font-medium">Kamera slotini bosib tanlang</p>
-            <p className="text-xs text-neutral-800">
-              Bir yoki bir nechta kamerani tanlash mumkin
+          <div className="h-full flex flex-col items-center justify-center gap-2 select-none">
+            <div className="grid grid-cols-2 gap-0.5 opacity-10">
+              {Array.from({ length: 4 }).map((_, i) => (
+                <div key={i} className="w-8 h-6 bg-[#444] rounded-sm" />
+              ))}
+            </div>
+            <p className="text-[#444] text-xs mt-2">
+              Select a camera slot to view
             </p>
           </div>
         ) : (
           <div
-            className={`grid ${previewGridCols(selectedCameras.length)} gap-3 auto-rows-fr`}
+            className={`grid ${previewGridCols(selectedCameras.length)} gap-0.5 auto-rows-fr`}
           >
             {selectedCameras.map((cam) => {
               const isOnline = statuses.get(cam.id) ?? false;
               return (
                 <div
                   key={cam.id}
-                  className="relative rounded-xl overflow-hidden border border-purple-500/40 shadow-[0_0_0_1px_rgba(124,58,237,0.2)] bg-black flex flex-col min-h-0 animate-[fadeIn_0.2s_ease-out]"
+                  className="relative bg-black flex flex-col min-h-0 border border-[#2a2a2e]"
                 >
-                  {/* Live stream */}
+                  {/* Stream */}
                   <div className="relative flex-1 min-h-[120px]">
                     {isOnline ? (
                       <CameraPlayer
@@ -231,9 +187,9 @@ export default function MultiViewGrid({
                         onSnapshot={() => onSnapshot(cam.id)}
                       />
                     ) : (
-                      <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 bg-[#0d0d14]">
-                        <WifiOff className="w-8 h-8 text-red-800" />
-                        <span className="text-xs text-red-900 font-semibold uppercase tracking-widest">
+                      <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 bg-[#111214]">
+                        <WifiOff className="w-6 h-6 text-[#333]" />
+                        <span className="text-[10px] text-[#444] uppercase tracking-widest">
                           Offline
                         </span>
                       </div>
@@ -241,23 +197,22 @@ export default function MultiViewGrid({
                   </div>
 
                   {/* Info bar */}
-                  <div className="flex-shrink-0 flex items-center gap-2 px-3 py-2 bg-gradient-to-r from-[#0d0d18] to-[#0a0a14] border-t border-neutral-800/60">
-                    {isOnline ? (
-                      <Wifi className="w-3 h-3 text-green-500 flex-shrink-0" />
-                    ) : (
-                      <WifiOff className="w-3 h-3 text-red-600 flex-shrink-0" />
-                    )}
-                    <span className="text-white text-xs font-semibold truncate">
+                  <div className="flex-shrink-0 flex items-center gap-2 px-2 py-1.5 bg-[#18191c] border-t border-[#2a2a2e]">
+                    <span
+                      className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${
+                        isOnline ? "bg-[#4ade80]" : "bg-[#ef4444]"
+                      }`}
+                    />
+                    <span className="text-[#ccc] text-[11px] font-medium truncate flex-1">
                       {cam.name}
                     </span>
-                    <span className="ml-auto text-neutral-600 text-[10px] font-mono flex-shrink-0">
+                    <span className="text-[#444] text-[10px] font-mono flex-shrink-0">
                       {cam.ipAddress}
                     </span>
-                    {/* Deselect button */}
                     <button
                       onClick={() => onToggleCamera(cam)}
-                      className="ml-2 flex-shrink-0 text-neutral-600 hover:text-red-400 transition-colors text-xs leading-none"
-                      title="Yopish"
+                      className="ml-1 flex-shrink-0 text-[#444] hover:text-[#888] transition-colors text-[10px] leading-none"
+                      title="Close"
                     >
                       ✕
                     </button>
