@@ -101,19 +101,6 @@ export default function MultiViewGrid({
           )}
           <span>{locked ? "Locked" : "Unlocked"}</span>
         </button>
-
-        {/* Legend */}
-        <div className="flex items-center gap-3 text-[10px] text-[#555]">
-          <span className="flex items-center gap-1">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#4ade80]" /> Online
-          </span>
-          <span className="flex items-center gap-1">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#ef4444]" /> Offline
-          </span>
-          <span className="flex items-center gap-1">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#333]" /> Empty
-          </span>
-        </div>
       </div>
 
       {/* ── Slot grid ── */}
