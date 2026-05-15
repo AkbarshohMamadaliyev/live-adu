@@ -1,8 +1,15 @@
 "use client";
 
+import { useState } from "react";
 import CameraPlayer from "./CameraPlayer";
 import type { Camera } from "./CameraList";
-import { WifiOff, PanelLeftOpen, PanelLeftClose } from "lucide-react";
+import {
+  WifiOff,
+  PanelLeftOpen,
+  PanelLeftClose,
+  Lock,
+  Unlock,
+} from "lucide-react";
 
 const MAX_SLOTS = 24;
 
@@ -36,6 +43,8 @@ export default function MultiViewGrid({
   sidebarOpen,
   onToggleSidebar,
 }: MultiViewGridProps) {
+  const [locked, setLocked] = useState(false);
+
   const onlineCount = cameras.filter((c) => statuses.get(c.id) ?? false).length;
 
   const slots: (Camera | null)[] = Array.from(
@@ -75,6 +84,24 @@ export default function MultiViewGrid({
           </span>
         </div>
 
+        {/* Lock toggle */}
+        <button
+          onClick={() => setLocked((v) => !v)}
+          title={locked ? "Unlock selection" : "Lock selection"}
+          className={`flex items-center gap-1.5 px-2 py-1 rounded text-[10px] transition-colors border ${
+            locked
+              ? "bg-[#2a1f0e] border-[#7c5c2e] text-[#f59e0b] hover:bg-[#33250f]"
+              : "bg-[#1a1b1e] border-[#2a2a2e] text-[#555] hover:text-[#aaa] hover:border-[#444]"
+          }`}
+        >
+          {locked ? (
+            <Lock className="w-3 h-3" />
+          ) : (
+            <Unlock className="w-3 h-3" />
+          )}
+          <span>{locked ? "Locked" : "Unlocked"}</span>
+        </button>
+
         {/* Legend */}
         <div className="flex items-center gap-3 text-[10px] text-[#555]">
           <span className="flex items-center gap-1">
@@ -90,7 +117,13 @@ export default function MultiViewGrid({
       </div>
 
       {/* ── Slot grid ── */}
-      <div className="flex-shrink-0 px-3 py-2.5 border-b border-[#2a2a2e] bg-[#18191c]">
+      <div className="flex-shrink-0 px-3 py-2.5 border-b border-[#2a2a2e] bg-[#18191c] relative">
+        {locked && (
+          <div
+            className="absolute inset-0 z-20 cursor-not-allowed"
+            title="Selection is locked"
+          />
+        )}
         <div className="grid grid-cols-6 sm:grid-cols-8 md:grid-cols-12 gap-px bg-[#2a2a2e]">
           {slots.map((cam, idx) => {
             const slotNum = idx + 1;
@@ -115,8 +148,12 @@ export default function MultiViewGrid({
             return (
               <button
                 key={cam.id}
-                onClick={() => onToggleCamera(cam)}
-                title={`${cam.name} — ${cam.ipAddress}`}
+                onClick={() => !locked && onToggleCamera(cam)}
+                title={
+                  locked
+                    ? `${cam.name} (locked)`
+                    : `${cam.name} — ${cam.ipAddress}`
+                }
                 className={`
                   relative flex flex-col items-start justify-between h-10 px-1.5 py-1 cursor-pointer
                   transition-colors duration-100 select-none overflow-hidden text-left
@@ -210,9 +247,10 @@ export default function MultiViewGrid({
                       {cam.ipAddress}
                     </span>
                     <button
-                      onClick={() => onToggleCamera(cam)}
-                      className="ml-1 flex-shrink-0 text-[#444] hover:text-[#888] transition-colors text-[10px] leading-none"
-                      title="Close"
+                      onClick={() => !locked && onToggleCamera(cam)}
+                      className={`ml-1 flex-shrink-0 transition-colors text-[10px] leading-none ${locked ? "text-[#2a2a2e] cursor-not-allowed" : "text-[#444] hover:text-[#888]"}`}
+                      title={locked ? "Unlock to close" : "Close"}
+                      disabled={locked}
                     >
                       ✕
                     </button>
