@@ -585,10 +585,8 @@ export default function CamerasPage() {
                 }
                 className="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-hikred"
               >
-                <option value="hikvision">
-                  Hikvision (auto: /Streaming/Channels/...)
-                </option>
-                <option value="custom">Custom RTSP URL (universal)</option>
+                <option value="hikvision">Hikvision</option>
+                <option value="custom">RTSP URL</option>
               </select>
               <p className="text-xs text-neutral-500 mt-1">
                 {form.cameraType === "hikvision"
