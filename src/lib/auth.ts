@@ -26,9 +26,18 @@ async function getCryptoKey(): Promise<CryptoKey> {
   );
 }
 
-export async function signSession(username: string): Promise<string> {
+export type SessionRole = "admin" | "viewer";
+
+export async function signSession(
+  username: string,
+  role: SessionRole = "viewer",
+): Promise<string> {
   const payload = b64uEncode(
-    JSON.stringify({ u: username, exp: Date.now() + SESSION_DURATION_MS }),
+    JSON.stringify({
+      u: username,
+      r: role,
+      exp: Date.now() + SESSION_DURATION_MS,
+    }),
   );
   const key = await getCryptoKey();
   const sigBuf = await crypto.subtle.sign(
@@ -60,7 +69,7 @@ export async function verifySession(
     const data = JSON.parse(b64uDecode(payload));
     if (data.exp < Date.now()) return null;
 
-    return { username: data.u };
+    return { username: data.u, role: (data.r ?? "viewer") as SessionRole };
   } catch {
     return null;
   }

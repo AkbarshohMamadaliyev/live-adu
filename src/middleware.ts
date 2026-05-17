@@ -5,7 +5,9 @@ export const runtime = "nodejs";
 
 const PUBLIC_PATHS = [
   "/login",
+  "/admin/login",
   "/api/auth/login",
+  "/api/auth/admin/login",
   "/api/cameras",
   "/api/status",
   "/api/snapshot",
@@ -28,23 +30,21 @@ export async function middleware(req: NextRequest) {
     return NextResponse.next();
   }
 
-  // Require authentication for /admin and all admin subroutes
-  if (pathname.startsWith("/admin")) {
-    const token = req.cookies.get(COOKIE_NAME)?.value;
-    const session = token ? await verifySession(token) : null;
-
-    if (!session) {
-      const loginUrl = req.nextUrl.clone();
-      loginUrl.pathname = "/login";
-      loginUrl.search = "";
-      return NextResponse.redirect(loginUrl);
-    }
-  }
-
-  // For other protected routes, also require authentication
   const token = req.cookies.get(COOKIE_NAME)?.value;
   const session = token ? await verifySession(token) : null;
 
+  // /admin routes require admin role
+  if (pathname.startsWith("/admin")) {
+    if (!session || session.role !== "admin") {
+      const loginUrl = req.nextUrl.clone();
+      loginUrl.pathname = "/admin/login";
+      loginUrl.search = "";
+      return NextResponse.redirect(loginUrl);
+    }
+    return NextResponse.next();
+  }
+
+  // All other protected routes require any valid session
   if (!session) {
     const loginUrl = req.nextUrl.clone();
     loginUrl.pathname = "/login";

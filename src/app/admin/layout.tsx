@@ -1,16 +1,20 @@
-import type { Metadata } from "next";
-import "../globals.css";
-import AdminSidebar from "@/components/admin/AdminSidebar";
+"use client";
 
-export const metadata: Metadata = {
-  title: "Admin Panel — Camera Viewer",
-};
+import { usePathname } from "next/navigation";
+import AdminSidebar from "@/components/admin/AdminSidebar";
+import "../globals.css";
 
 export default function AdminLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const pathname = usePathname();
+
+  if (pathname === "/admin/login") {
+    return <>{children}</>;
+  }
+
   return (
     <div className="flex h-screen bg-neutral-950 text-white overflow-hidden">
       <AdminSidebar />

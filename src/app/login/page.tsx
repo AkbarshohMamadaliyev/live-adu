@@ -39,7 +39,7 @@ export default function LoginPage() {
         return;
       }
 
-      window.location.href = "/admin";
+      window.location.href = "/";
     } catch {
       setError("Network error. Please try again.");
     } finally {

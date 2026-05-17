@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { signSession, COOKIE_NAME } from "@/lib/auth";
 
-const ADMIN_USERNAME = process.env.ADMIN_USERNAME ?? "admin";
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD ?? "admin123";
+const VIEWER_USERNAME = process.env.VIEWER_USERNAME ?? "viewer";
+const VIEWER_PASSWORD = process.env.VIEWER_PASSWORD ?? "viewer123";
 
 export async function POST(req: NextRequest) {
   try {
@@ -11,8 +11,8 @@ export async function POST(req: NextRequest) {
     if (
       typeof username !== "string" ||
       typeof password !== "string" ||
-      username.trim() !== ADMIN_USERNAME ||
-      password !== ADMIN_PASSWORD
+      username.trim() !== VIEWER_USERNAME ||
+      password !== VIEWER_PASSWORD
     ) {
       return NextResponse.json(
         { error: "Invalid username or password" },
@@ -20,14 +20,14 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const token = await signSession(username.trim());
+    const token = await signSession(username.trim(), "viewer");
 
     const response = NextResponse.json({ success: true });
     response.cookies.set(COOKIE_NAME, token, {
       httpOnly: true,
       sameSite: "lax",
       path: "/",
-      maxAge: 8 * 60 * 60, // 8 hours in seconds
+      maxAge: 8 * 60 * 60,
       secure: process.env.NODE_ENV === "production",
     });
     return response;

@@ -1,0 +1,152 @@
+"use client";
+
+import { useState, FormEvent } from "react";
+import { useRouter } from "next/navigation";
+import { Eye, EyeOff, Loader2, AlertCircle, ShieldCheck } from "lucide-react";
+
+export default function AdminLoginPage() {
+  const router = useRouter();
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+    setError(null);
+
+    if (!username.trim()) {
+      setError("Username is required");
+      return;
+    }
+    if (!password) {
+      setError("Password is required");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const res = await fetch("/api/auth/admin/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username: username.trim(), password }),
+      });
+      const data = await res.json();
+
+      if (!res.ok) {
+        setError(data.error ?? "Login failed");
+        return;
+      }
+
+      window.location.href = "/admin";
+    } catch {
+      setError("Network error. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-neutral-950 flex items-center justify-center p-4">
+      <div className="w-full max-w-sm">
+        {/* Logo / Branding */}
+        <div className="text-center mb-8">
+          <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-hikred/10 border border-hikred/30 mb-4">
+            <ShieldCheck className="w-7 h-7 text-hikred" />
+          </div>
+          <h1 className="text-2xl font-bold text-white">Admin Panel</h1>
+          <p className="text-neutral-500 text-sm mt-1">
+            Sign in with admin credentials
+          </p>
+        </div>
+
+        {/* Form */}
+        <form
+          onSubmit={handleSubmit}
+          noValidate
+          className="bg-neutral-900 border border-neutral-800 rounded-2xl p-6 space-y-4"
+        >
+          {/* Error banner */}
+          {error && (
+            <div className="flex items-center gap-2.5 text-red-400 bg-red-400/10 border border-red-400/20 rounded-lg px-3.5 py-3 text-sm">
+              <AlertCircle className="w-4 h-4 flex-shrink-0" />
+              <span>{error}</span>
+            </div>
+          )}
+
+          {/* Username */}
+          <div>
+            <label className="block text-sm text-neutral-400 mb-1.5">
+              Username
+            </label>
+            <input
+              type="text"
+              autoComplete="username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              className="w-full bg-neutral-800 border border-neutral-700 focus:border-hikred text-white rounded-lg px-3.5 py-2.5 text-sm outline-none transition-colors placeholder:text-neutral-600"
+              placeholder="admin"
+            />
+          </div>
+
+          {/* Password */}
+          <div>
+            <label className="block text-sm text-neutral-400 mb-1.5">
+              Password
+            </label>
+            <div className="relative">
+              <input
+                type={showPassword ? "text" : "password"}
+                autoComplete="current-password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full bg-neutral-800 border border-neutral-700 focus:border-hikred text-white rounded-lg px-3.5 py-2.5 pr-10 text-sm outline-none transition-colors placeholder:text-neutral-600"
+                placeholder="••••••••"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword((v) => !v)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-500 hover:text-neutral-300 transition-colors"
+                tabIndex={-1}
+              >
+                {showPassword ? (
+                  <EyeOff className="w-4 h-4" />
+                ) : (
+                  <Eye className="w-4 h-4" />
+                )}
+              </button>
+            </div>
+          </div>
+
+          {/* Submit */}
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full bg-hikred hover:bg-red-700 disabled:opacity-60 disabled:cursor-not-allowed text-white font-semibold py-2.5 rounded-lg text-sm transition-colors flex items-center justify-center gap-2 mt-2"
+          >
+            {loading ? (
+              <>
+                <Loader2 className="w-4 h-4 animate-spin" />
+                Signing in…
+              </>
+            ) : (
+              "Sign In"
+            )}
+          </button>
+        </form>
+
+        {/* Back to viewer login */}
+        <p className="text-center text-neutral-600 text-xs mt-4">
+          Not an admin?{" "}
+          <a
+            href="/login"
+            className="text-neutral-400 hover:text-white transition-colors"
+          >
+            Go to viewer login
+          </a>
+        </p>
+      </div>
+    </div>
+  );
+}
