@@ -209,6 +209,7 @@ export default function MultiViewGrid({
                         online={true}
                         compact={true}
                         onSnapshot={() => onSnapshot(cam.id)}
+                        locked={locked}
                       />
                     ) : (
                       <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 bg-[#111214]">
