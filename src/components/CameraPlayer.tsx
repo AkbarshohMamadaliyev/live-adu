@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react'
 import Hls from 'hls.js'
-import { Camera as CameraIcon, Loader2, AlertCircle, Maximize2 } from 'lucide-react'
+import { Camera as CameraIcon, Loader2, AlertCircle, Maximize2, Volume2, VolumeX } from 'lucide-react'
 
 interface CameraPlayerProps {
   cameraId: string
@@ -25,6 +25,8 @@ export default function CameraPlayer({
   const retryTimeoutRef = useRef<NodeJS.Timeout | null>(null)
   const [status, setStatus] = useState<'idle' | 'loading' | 'playing' | 'error'>('idle')
   const [errorMsg, setErrorMsg] = useState<string>('')
+  // Video avtoplay ishlashi uchun muted holatda boshlanadi
+  const [isMuted, setIsMuted] = useState(true)
 
   useEffect(() => {
     if (!online) {
@@ -237,6 +239,16 @@ export default function CameraPlayer({
     videoRef.current?.requestFullscreen?.()
   }
 
+  const toggleMute = () => {
+    const video = videoRef.current
+    if (!video) return
+    const next = !video.muted
+    video.muted = next
+    // Ovozni yoqqanda video pauzada qolib ketmasligi uchun
+    if (!next) video.play().catch(() => {})
+    setIsMuted(next)
+  }
+
   return (
     <div className="relative bg-black rounded-lg overflow-hidden border border-neutral-800 group">
       {/* Header */}
@@ -277,6 +289,19 @@ export default function CameraPlayer({
       {/* Controls */}
       {status === 'playing' && (
         <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-3 flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+          <button
+            onClick={toggleMute}
+            className="bg-white/10 hover:bg-white/20 p-2 rounded-md transition-colors"
+            title={isMuted ? 'Ovozni yoqish' : 'Ovozni o\'chirish'}
+            aria-label={isMuted ? 'Ovozni yoqish' : 'Ovozni o\'chirish'}
+            aria-pressed={!isMuted}
+          >
+            {isMuted ? (
+              <VolumeX className="w-4 h-4 text-white/40" />
+            ) : (
+              <Volume2 className="w-4 h-4 text-white" />
+            )}
+          </button>
           {onSnapshot && (
             <button
               onClick={onSnapshot}

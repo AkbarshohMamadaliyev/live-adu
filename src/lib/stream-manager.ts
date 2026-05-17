@@ -177,9 +177,20 @@ class StreamManager {
           "0",
         ];
 
-    // AUDIO O'CHIRILGAN — turli kameralarda (Hikvision pcm_mulaw, va boshqalar)
-    // turli audio kodek bo'ladi, HLS bilan har doim mos kelmaydi.
-    const audioArgs = ["-an"];
+    // AUDIO — kameralar turli kodek beradi (Hikvision pcm_mulaw, G.711, va h.k.).
+    // HLS faqat AAC bilan ishonchli ishlaydi, shuning uchun audioni AAC ga
+    // transkod qilamiz. Kamerada audio dorasi bo'lmasa, FFmpeg uni e'tiborsiz
+    // qoldiradi va stream baribir ishlayveradi.
+    const audioArgs = [
+      "-c:a",
+      "aac",
+      "-b:a",
+      "128k",
+      "-ar",
+      "44100",
+      "-ac",
+      "2",
+    ];
 
     const hlsArgs = [
       "-f",
