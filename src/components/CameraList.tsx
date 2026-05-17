@@ -111,7 +111,7 @@ export default function CameraList({
       <button
         key={cam.id}
         onClick={() => onSelect(cam.id)}
-        className={`w-full text-left pl-8 pr-3 py-2 rounded-lg mb-0.5 transition-all duration-150 flex items-center gap-2.5 ${
+        className={`w-full text-left pl-7 pr-3 py-2 rounded-lg mb-0.5 transition-all duration-150 flex items-center gap-2.5 ${
           isSelected
             ? "bg-hikpurple-900/40 border border-hikpurple-500/50 shadow-purple-glow-sm"
             : "hover:bg-neutral-800 border border-transparent"
@@ -123,10 +123,10 @@ export default function CameraList({
           <WifiOff className="w-3.5 h-3.5 text-neutral-600 flex-shrink-0" />
         )}
         <div className="min-w-0 flex-1">
-          <div className="text-white text-xs font-medium truncate">
+          <div className="text-white text-sm font-medium truncate">
             {cam.name}
           </div>
-          <div className="text-neutral-500 text-[10px] font-mono truncate">
+          <div className="text-neutral-500 text-xs font-mono truncate">
             {cam.ipAddress}
           </div>
         </div>
@@ -142,15 +142,15 @@ export default function CameraList({
   };
 
   return (
-    <div className="w-64 bg-[#0d0d14] border-r border-neutral-800/70 flex flex-col h-full">
+    <div className="w-72 bg-[#0d0d14] border-r border-neutral-800/70 flex flex-col h-full">
       {/* Header */}
-      <div className="p-4 border-b border-neutral-800/70 bg-[#0a0a0f]">
+      <div className="p-5 border-b border-neutral-800/70 bg-[#0a0a0f]">
         <div className="flex items-center gap-3">
-          <div className="relative flex items-center justify-center w-6 h-6 flex-shrink-0">
+          <div className="relative flex items-center justify-center w-8 h-8 flex-shrink-0">
             <span className="absolute inline-flex w-full h-full rounded-full bg-red-500 opacity-20 animate-ping" />
-            <span className="relative w-3 h-3 rounded-full bg-red-500" />
+            <span className="relative w-4 h-4 rounded-full bg-red-500" />
           </div>
-          <h1 className="text-red-500 text-lg font-bold tracking-tight">
+          <h1 className="text-red-500 text-2xl font-bold tracking-tight">
             Live ADU
           </h1>
         </div>
@@ -176,18 +176,18 @@ export default function CameraList({
               {/* Category row */}
               <button
                 onClick={() => toggleCat(cat.id)}
-                className="w-full flex items-center gap-2 px-2 py-1.5 rounded-lg text-neutral-400 hover:bg-neutral-800/60 transition-colors group"
+                className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-neutral-400 hover:bg-neutral-800/60 transition-colors group"
               >
                 {expandedCats.has(cat.id) ? (
-                  <ChevronDown className="w-3 h-3 flex-shrink-0 text-neutral-600" />
+                  <ChevronDown className="w-4 h-4 flex-shrink-0 text-neutral-600" />
                 ) : (
-                  <ChevronRight className="w-3 h-3 flex-shrink-0 text-neutral-600" />
+                  <ChevronRight className="w-4 h-4 flex-shrink-0 text-neutral-600" />
                 )}
-                <FolderOpen className="w-3.5 h-3.5 text-blue-500 flex-shrink-0" />
-                <span className="text-[11px] font-semibold uppercase tracking-widest text-neutral-400 truncate">
+                <FolderOpen className="w-4 h-4 text-blue-500 flex-shrink-0" />
+                <span className="text-xs font-semibold uppercase tracking-widest text-neutral-400 truncate">
                   {cat.name}
                 </span>
-                <span className="ml-auto text-[10px] text-neutral-600 font-mono">
+                <span className="ml-auto text-xs text-neutral-600 font-mono">
                   {catOnline}
                 </span>
               </button>
@@ -206,21 +206,21 @@ export default function CameraList({
                           toggleSub(sub.id);
                           onSelectSub?.(sub.id, sub.cameras);
                         }}
-                        className={`w-full flex items-center gap-2 px-2 py-1.5 rounded-lg transition-all duration-150 ${
+                        className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg transition-all duration-150 ${
                           isSubSelected
                             ? "bg-hikpurple-900/40 border border-hikpurple-500/40 text-hikpurple-400 shadow-purple-glow-sm"
                             : "text-neutral-400 hover:bg-neutral-800/50 border border-transparent"
                         }`}
                       >
                         <Layers
-                          className={`w-3 h-3 flex-shrink-0 ${
+                          className={`w-4 h-4 flex-shrink-0 ${
                             isSubSelected
                               ? "text-hikpurple-400"
                               : "text-neutral-600"
                           }`}
                         />
                         <span
-                          className={`text-[11px] font-medium truncate ${
+                          className={`text-xs font-medium truncate ${
                             isSubSelected
                               ? "text-hikpurple-300"
                               : "text-neutral-400"
@@ -230,7 +230,7 @@ export default function CameraList({
                         </span>
                         {/* boks (2/24) badge */}
                         <span
-                          className={`ml-auto text-[10px] font-mono flex-shrink-0 ${
+                          className={`ml-auto text-xs font-mono flex-shrink-0 ${
                             isSubSelected
                               ? "text-hikpurple-400"
                               : "text-neutral-600"

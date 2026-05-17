@@ -139,7 +139,7 @@ export default function HomePage() {
       {/* Sidebar */}
       <div
         className={`flex-shrink-0 transition-all duration-300 ease-in-out overflow-hidden ${
-          sidebarOpen ? "w-64" : "w-0"
+          sidebarOpen ? "w-72" : "w-0"
         }`}
       >
         <CameraList

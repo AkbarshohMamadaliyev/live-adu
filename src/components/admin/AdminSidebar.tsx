@@ -29,13 +29,15 @@ export default function AdminSidebar() {
   };
 
   return (
-    <aside className="w-60 bg-neutral-900 border-r border-neutral-800 flex flex-col flex-shrink-0">
+    <aside className="w-72 bg-neutral-900 border-r border-neutral-800 flex flex-col flex-shrink-0">
       {/* Logo */}
-      <div className="p-5 border-b border-neutral-800">
-        <h1 className="text-hikred font-bold text-xl tracking-tight">
-          Hikvision
+      <div className="p-5 border-b border-neutral-800 ml-2">
+        <h1 className="text-hikred font-bold text-2xl tracking-tight">
+          Live ADU
         </h1>
-        <p className="text-neutral-400 text-xs mt-0.5">Admin Panel</p>
+        <p className="text-neutral-400 text-xs mt-0.5 font-semibold tracking-tight">
+          Admin Panel
+        </p>
       </div>
 
       {/* Navigation */}
