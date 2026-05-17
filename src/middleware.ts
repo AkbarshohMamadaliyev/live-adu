@@ -4,9 +4,7 @@ import { verifySession, COOKIE_NAME } from "@/lib/auth";
 export const runtime = "nodejs";
 
 const PUBLIC_PATHS = [
-  "/login",
   "/admin/login",
-  "/api/auth/login",
   "/api/auth/admin/login",
   "/api/cameras",
   "/api/status",
@@ -30,11 +28,11 @@ export async function middleware(req: NextRequest) {
     return NextResponse.next();
   }
 
-  const token = req.cookies.get(COOKIE_NAME)?.value;
-  const session = token ? await verifySession(token) : null;
-
   // /admin routes require admin role
   if (pathname.startsWith("/admin")) {
+    const token = req.cookies.get(COOKIE_NAME)?.value;
+    const session = token ? await verifySession(token) : null;
+
     if (!session || session.role !== "admin") {
       const loginUrl = req.nextUrl.clone();
       loginUrl.pathname = "/admin/login";
@@ -44,14 +42,7 @@ export async function middleware(req: NextRequest) {
     return NextResponse.next();
   }
 
-  // All other protected routes require any valid session
-  if (!session) {
-    const loginUrl = req.nextUrl.clone();
-    loginUrl.pathname = "/login";
-    loginUrl.search = "";
-    return NextResponse.redirect(loginUrl);
-  }
-
+  // All other routes are publicly accessible
   return NextResponse.next();
 }
 
