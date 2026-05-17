@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { signSession, COOKIE_NAME } from "@/lib/auth";
 
 const ADMIN_USERNAME = process.env.ADMIN_USERNAME ?? "admin";
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD ?? "admin123";
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD ?? "admin2026";
 
 export async function POST(req: NextRequest) {
   try {

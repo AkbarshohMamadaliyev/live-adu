@@ -1,11 +1,9 @@
 "use client";
 
 import { useState, FormEvent } from "react";
-import { useRouter } from "next/navigation";
-import { Eye, EyeOff, Loader2, AlertCircle, Video } from "lucide-react";
+import { Eye, EyeOff, Loader2, AlertCircle, ShieldCheck } from "lucide-react";
 
 export default function LoginPage() {
-  const router = useRouter();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -27,7 +25,7 @@ export default function LoginPage() {
 
     setLoading(true);
     try {
-      const res = await fetch("/api/auth/login", {
+      const res = await fetch("/api/auth/admin/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username: username.trim(), password }),
@@ -39,7 +37,7 @@ export default function LoginPage() {
         return;
       }
 
-      window.location.href = "/";
+      window.location.href = "/admin";
     } catch {
       setError("Network error. Please try again.");
     } finally {
@@ -49,16 +47,15 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen bg-neutral-950 flex items-center justify-center p-4">
-      {/* Card */}
       <div className="w-full max-w-sm">
         {/* Logo / Branding */}
         <div className="text-center mb-8">
           <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-hikred/10 border border-hikred/30 mb-4">
-            <Video className="w-7 h-7 text-hikred" />
+            <ShieldCheck className="w-7 h-7 text-hikred" />
           </div>
-          <h1 className="text-2xl font-bold text-white">Live ADU</h1>
+          <h1 className="text-2xl font-bold text-white">Admin Panel</h1>
           <p className="text-neutral-500 text-sm mt-1">
-            Sign in to access the platform
+            Sign in with admin credentials
           </p>
         </div>
 
